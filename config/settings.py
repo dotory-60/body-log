@@ -50,7 +50,7 @@ THIRD_APPS = [
 
 # 3. 개발자 정의 앱: 직접 만들 서비스 로직
 OWN_APPS = [
-    # 예: 'users', 'logs'
+    'accounts',
 ]
 
 # 최종 통합: 리스트를 합쳐 Django가 인식하도록 설정
@@ -136,3 +136,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+AUTH_USER_MODEL = 'accounts.User'
