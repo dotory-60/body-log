@@ -51,6 +51,7 @@ THIRD_APPS = [
 # 3. 개발자 정의 앱: 직접 만들 서비스 로직
 OWN_APPS = [
     'accounts',
+    'logs',
 ]
 
 # 최종 통합: 리스트를 합쳐 Django가 인식하도록 설정
@@ -138,3 +139,13 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+# -----------------------------------------------------------------------------
+# MEDIA SETTINGS (User Uploaded Files)
+# -----------------------------------------------------------------------------
+
+# 브라우저에서 파일에 접근할 때 사용하는 경로
+MEDIA_URL = '/media/'
+
+# 서버 내부에서 실제 파일이 저장되는 물리적 절대 경로
+MEDIA_ROOT = BASE_DIR / 'media'
