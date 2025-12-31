@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "body-log"
+version = "0.1.0"
+description = ""
+authors = ["dotory-60 <busdotory@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^6.0"
+psycopg2-binary = "^2.9.11" # PostgreSQL과 Django 연결해주는 드라이버
+python-dotenv = "^1.2.1"    # DB password, 비밀키 .env 파일에 저장하고 불러올 수 있게 (핵심보안)
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
