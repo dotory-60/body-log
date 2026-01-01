@@ -17,10 +17,11 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('logs/', include('logs.urls')), # http://127.0.0.1:8000/logs/
 ]
 
 # 개발 모드(DEBUG=True)일 때만 미디어 파일을 서빙하도록 설정

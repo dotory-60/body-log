@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if is_edit %}기록 수정{% else %}새 기록{% endif %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="container" style="background-color: #f5f5f7;">
+    <div style="max-width: 600px; margin: 0 auto;">
+        <header style="margin-bottom: 40px; text-align: center;">
+            <h1 style="font-size: 2rem; font-weight: 700;">
+                {% if is_edit %}기록 수정하기{% else %}오늘의 눈바디 기록{% endif %}
+            </h1>
+            <p style="color: #86868b;">변화는 기록에서부터 시작됩니다.</p>
+        </header>
+
+        <div class="card" style="background: #fff; padding: 40px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.95rem;">
+                        {{ field.label }}
+                    </label>
+                    <div class="form-input-wrapper">
+                        {{ field }}
+                    </div>
+                    {% if field.help_text %}
+                        <small style="color: #86868b; display: block; margin-top: 5px; font-size: 0.8rem;">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p style="color: #ff3b30; font-size: 0.8rem; margin-top: 5px;">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 40px;">
+                    <button type="submit" class="btn-primary" style="border: none; cursor: pointer; font-size: 1rem; height: 50px;">
+                        저장하기
+                    </button>
+                    <a href="{% url 'logs:index' %}" style="display: flex; align-items: center; justify-content: center; background: #e5e5e7; color: #1d1d1f; text-decoration: none; border-radius: 20px; font-weight: 500;">
+                        취소
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

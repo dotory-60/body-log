@@ -72,7 +72,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -124,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-KR'
 
 TIME_ZONE = 'UTC'
 
@@ -149,3 +149,6 @@ MEDIA_URL = '/media/'
 
 # 서버 내부에서 실제 파일이 저장되는 물리적 절대 경로
 MEDIA_ROOT = BASE_DIR / 'media'
+
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']

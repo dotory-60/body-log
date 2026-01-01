@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>눈바디 대시보드</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="container">
+    <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px;">
+        <h1 style="font-size: 2.5rem; letter-spacing: -0.5px;">Dashboard</h1>
+        <a href="{% url 'logs:create' %}" class="btn-primary">+ 기록하기</a>
+    </header>
+
+    <div class="view-selector">
+        <button class="tab-btn active" onclick="showView('full')">전체보기</button>
+        <button class="tab-btn" onclick="showView('compare')">비교하기</button>
+    </div>
+
+    <section id="full-view-section">
+        <div class="log-grid">
+            {% for log in logs %}
+            <div class="card">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>{{ log.date|date:"Y년 m월 d일" }} | BMI {{ log.bmi }}</span>
+                    <div class="card-actions">
+                        <a href="{% url 'logs:edit' log.pk %}" class="action-link">수정</a>
+                        <form action="{% url 'logs:delete' log.pk %}" method="post" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                            {% csrf_token %}
+                            <button type="submit" class="action-link delete-btn">삭제</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="full-view-grid">
+                    <img src="{{ log.image_front.url }}" class="img-mini">
+                    <img src="{{ log.image_side.url }}" class="img-mini">
+                    <img src="{{ log.image_back.url }}" class="img-mini">
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section id="compare-section" style="display: none;">
+        <div class="compare-controls" style="text-align: center;">
+            <button onclick="changePart('front', this)" class="btn active">전면</button>
+            <button onclick="changePart('side', this)" class="btn">측면</button>
+            <button onclick="changePart('back', this)" class="btn">후면</button>
+        </div>
+        <div class="compare-container">
+            <div class="compare-box">
+                <select id="left-date" onchange="updateCompare('left')" style="margin-bottom:15px; padding:5px;">
+                    {% for log in logs %}<option value="{{ log.id }}">{{ log.date|date:"Y-m-d" }}</option>{% endfor %}
+                </select>
+                <img id="left-img" class="compare-img" src="">
+            </div>
+            <div class="compare-box">
+                <select id="right-date" onchange="updateCompare('right')" style="margin-bottom:15px; padding:5px;">
+                    {% for log in logs %}<option value="{{ log.id }}">{{ log.date|date:"Y-m-d" }}</option>{% endfor %}
+                </select>
+                <img id="right-img" class="compare-img" src="">
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let currentPart = 'front';
+        function showView(viewType) {
+            const fullSec = document.getElementById('full-view-section');
+            const compareSec = document.getElementById('compare-section');
+            const btns = document.querySelectorAll('.tab-btn');
+            btns.forEach(b => b.classList.remove('active'));
+            if (viewType === 'full') {
+                fullSec.style.display = 'block'; compareSec.style.display = 'none'; btns[0].classList.add('active');
+            } else {
+                fullSec.style.display = 'none'; compareSec.style.display = 'block'; btns[1].classList.add('active');
+                updateCompare('left'); updateCompare('right');
+            }
+        }
+        function changePart(part, btnElement) {
+            currentPart = part;
+            document.querySelectorAll('.compare-controls .btn').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+            updateCompare('left'); updateCompare('right');
+        }
+        async function updateCompare(side) {
+            const logId = document.getElementById(side + '-date').value;
+            if (!logId) return;
+            try {
+                const response = await fetch(`/logs/api/log/${logId}/`);
+                const data = await response.json();
+                const img = document.getElementById(side + '-img');
+                img.style.opacity = 0;
+                setTimeout(() => { img.src = data[currentPart]; img.style.opacity = 1; }, 200);
+            } catch (e) { console.error(e); }
+        }
+        window.onload = () => { if(document.getElementById('left-date')) { updateCompare('left'); updateCompare('right'); } }
+    </script>
+</body>
+</html>
