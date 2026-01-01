@@ -70,3 +70,19 @@ def log_detail_api(request, pk):
         })
     except BodyLog.DoesNotExist:
         return JsonResponse({'error': 'Not found'}, status=404)
+
+@login_required
+def bodylog_list(request):
+    # 최신순 리스트 (카드 목록용)
+    logs = BodyLog.objects.filter(user=request.user).order_by('-date')
+
+    # 과거순 리스트 (그래프는 시간이 왼쪽에서 오른쪽으로 흘러야 함)
+    chart_logs = BodyLog.objects.filter(user=request.user).order_by('date')
+    dates = [log.date.strftime('%m/%d') for log in chart_logs]
+    weights = [float(log.weight) for log in chart_logs]
+
+    return render(request, 'logs/bodylog_list.html', {
+        'logs': logs,
+        'dates': dates,
+        'weights': weights,
+    })
